@@ -37,6 +37,7 @@ class App:
         self.count = 0
 
     def run(self):  # 光流运行方法
+
         while True:
             ret, frame = self.cam.read()  # 读取视频帧
             if ret:
@@ -97,15 +98,15 @@ class App:
                         f.writelines([str(x1), ' ', str(y1), ' ', str(x2), ' ', str(y2), '\n'])
                         dis = cmath.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
                         # 正确追踪的点的个数
-                        print(len(self.tracks))
+                        # print(len(self.tracks))
                         # 每一个正确追踪的点的像素点的位移
                         print(dis.real)
                         distance = distance + dis
                     distance = distance / len(self.tracks)
                     self.all_distance = self.all_distance + distance
                     self.count = self.count + 1
-                    print("每一帧像素点平均位移：", distance, "第几帧：", self.count)
-                    print("所有帧平均位移：", (self.all_distance / self.count).real)
+                    # print("每一帧像素点平均位移：", distance, "第几帧：", self.count)
+                    # print("所有帧平均位移：", (self.all_distance / self.count).real)
                 f.close()
 
                 if self.frame_idx % self.detect_interval == 0:  # 每1帧检测一次特征点
@@ -123,10 +124,11 @@ class App:
                 cv2.namedWindow('lk_track', 0)
                 cv2.resizeWindow('lk_track', 400, 400)
                 cv2.imshow('lk_track', vis)
+                # cv2.imwrite("output1.jpg", vis)
 
             ch = 0xFF & cv2.waitKey(1)
             if ch == 27:
-                # cv2.imwrite("./mashiti-result4.png", vis)
+                # cv2.imwrite("mashiti-result4.png", vis)
                 break
 
 
