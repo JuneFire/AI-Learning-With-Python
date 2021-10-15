@@ -113,7 +113,8 @@ def testingNB():
 
 def textParse(bigString):  # 将字符串转换为字符列表
     import re
-    listOfTokens = re.split(r'\W+', bigString)  # 将特殊符号作为切分标志进行字符串切分，即非字母、非数字 (可能是re库更新或者python版本不同等问题，目前将re.split(r'\W*', bigString)改为re.split(r'\W+', bigString)即可)
+    listOfTokens = re.split(r'\W+',
+                            bigString)  # 将特殊符号作为切分标志进行字符串切分，即非字母、非数字 (可能是re库更新或者python版本不同等问题，目前将re.split(r'\W*', bigString)改为re.split(r'\W+', bigString)即可)
     return [tok.lower() for tok in listOfTokens if len(tok) > 2]  # 除了单个字母，例如大写的I，其它单词变成小写
 
 
@@ -157,12 +158,19 @@ def spamTest():
     print('错误率：%.2f%%' % (float(errorCount) / len(testSet) * 100))
 
 
+'''
+RSS源分类器及高频词去除函数
+'''
+
+
+# 高频词去除函数
 def calcMostFreq(vocabList, fullText):
-    import operator
+    # 遍历词汇表中的每个词并统计它在文本中出现的次数
     freqDict = {}
     for token in vocabList:
-        freqDict[token] = fullText.count(token)
-    sortedFreq = sorted(freqDict.items(), key=operator.itemgetter(1), reverse=True)
+        freqDict[token] = fullText.count(token)  # 统计每个词在文本中出现的次数
+    # 根据出现次数从高到低对词典进行排序，最后返回排序最高的30个单词
+    sortedFreq = sorted(freqDict.items(), key=operator.itemgetter(1), reverse=True)  # True表示降序排列
     return sortedFreq[:30]
 
 
