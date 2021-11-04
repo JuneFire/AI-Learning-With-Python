@@ -41,7 +41,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
     alphas = mat(zeros((m, 1)))
     iter = 0
     while (iter < maxIter):
-        alphaPairsChanged = 0   # 记录alpha是否已经进行优
+        alphaPairsChanged = 0  # 记录alpha是否已经进行优
         for i in range(m):
             fXi = float(multiply(alphas, labelMat).T * (dataMatrix * dataMatrix[i, :].T)) + b
             Ei = fXi - float(labelMat[i])  # if checks if an example violates KKT conditions
@@ -58,7 +58,10 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                     L = max(0, alphas[j] + alphas[i] - C)
                     H = min(C, alphas[j] + alphas[i])
                 if L == H: print("L==H"); continue
-                eta = 2.0 * dataMatrix[i, :] * dataMatrix[j, :].T - dataMatrix[i, :] * dataMatrix[i, :].T - dataMatrix[j, :] * dataMatrix[j, :].T
+                eta = 2.0 * dataMatrix[i, :] * dataMatrix[j, :].T - dataMatrix[i, :] * dataMatrix[i, :].T - dataMatrix[
+                                                                                                            j,
+                                                                                                            :] * dataMatrix[
+                                                                                                                 j, :].T
                 if eta >= 0: print("eta>=0"); continue  # Eta是alpha[j]的最优修改量
                 alphas[j] -= labelMat[j] * (Ei - Ej) / eta  # 第二个alpha值
                 alphas[j] = clipAlpha(alphas[j], H, L)
@@ -85,15 +88,6 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
     return b, alphas
 
 
-if __name__ == '__main__':
-    dataArr, labelArr = loadDataSet('testSet.txt')
-    print(len(labelArr))
-    b, alphas = smoSimple(dataArr, labelArr, 0.6, 0.001, 40)
-    print(b)
-    print(alphas[alphas>0])
-    for i in range(100):
-        if alphas[i] > 0.0 : print(dataArr[i], labelArr[i])
-    # smoSimple
 
 
 def kernelTrans(X, A, kTup):  # calc the kernel or transform data to a higher dimensional space
@@ -183,9 +177,9 @@ def innerL(i, oS):
         oS.alphas[i] += oS.labelMat[j] * oS.labelMat[i] * (alphaJold - oS.alphas[j])  # update i by the same amount as j
         updateEk(oS, i)  # added this for the Ecache                    #the update is in the oppostie direction
         b1 = oS.b - Ei - oS.labelMat[i] * (oS.alphas[i] - alphaIold) * oS.K[i, i] - oS.labelMat[j] * (
-                    oS.alphas[j] - alphaJold) * oS.K[i, j]
+                oS.alphas[j] - alphaJold) * oS.K[i, j]
         b2 = oS.b - Ej - oS.labelMat[i] * (oS.alphas[i] - alphaIold) * oS.K[i, j] - oS.labelMat[j] * (
-                    oS.alphas[j] - alphaJold) * oS.K[j, j]
+                oS.alphas[j] - alphaJold) * oS.K[j, j]
         if (0 < oS.alphas[i]) and (oS.C > oS.alphas[i]):
             oS.b = b1
         elif (0 < oS.alphas[j]) and (oS.C > oS.alphas[j]):
@@ -292,11 +286,11 @@ def loadImages(dirName):
 def testDigits(kTup=('rbf', 10)):
     dataArr, labelArr = loadImages('trainingDigits')
     b, alphas = smoP(dataArr, labelArr, 200, 0.0001, 10000, kTup)
-    datMat = mat(dataArr);
+    datMat = mat(dataArr)
     labelMat = mat(labelArr).transpose()
     svInd = nonzero(alphas.A > 0)[0]
     sVs = datMat[svInd]
-    labelSV = labelMat[svInd];
+    labelSV = labelMat[svInd]
     print("there are %d Support Vectors" % shape(sVs)[0])
     m, n = shape(datMat)
     errorCount = 0
@@ -307,7 +301,7 @@ def testDigits(kTup=('rbf', 10)):
     print("the training error rate is: %f" % (float(errorCount) / m))
     dataArr, labelArr = loadImages('testDigits')
     errorCount = 0
-    datMat = mat(dataArr);
+    datMat = mat(dataArr)
     labelMat = mat(labelArr).transpose()
     m, n = shape(datMat)
     for i in range(m):
@@ -390,9 +384,9 @@ def innerLK(i, oS):
         oS.alphas[i] += oS.labelMat[j] * oS.labelMat[i] * (alphaJold - oS.alphas[j])  # update i by the same amount as j
         updateEk(oS, i)  # added this for the Ecache                    #the update is in the oppostie direction
         b1 = oS.b - Ei - oS.labelMat[i] * (oS.alphas[i] - alphaIold) * oS.X[i, :] * oS.X[i, :].T - oS.labelMat[j] * (
-                    oS.alphas[j] - alphaJold) * oS.X[i, :] * oS.X[j, :].T
+                oS.alphas[j] - alphaJold) * oS.X[i, :] * oS.X[j, :].T
         b2 = oS.b - Ej - oS.labelMat[i] * (oS.alphas[i] - alphaIold) * oS.X[i, :] * oS.X[j, :].T - oS.labelMat[j] * (
-                    oS.alphas[j] - alphaJold) * oS.X[j, :] * oS.X[j, :].T
+                oS.alphas[j] - alphaJold) * oS.X[j, :] * oS.X[j, :].T
         if (0 < oS.alphas[i]) and (oS.C > oS.alphas[i]):
             oS.b = b1
         elif (0 < oS.alphas[j]) and (oS.C > oS.alphas[j]):
@@ -428,3 +422,15 @@ def smoPK(dataMatIn, classLabels, C, toler, maxIter):  # full Platt SMO
             entireSet = True
         print("iteration number: %d" % iter)
     return oS.b, oS.alphas
+
+
+if __name__ == '__main__':
+    # dataArr, labelArr = loadDataSet('testSet.txt')
+    # print(len(labelArr))
+    # b, alphas = smoSimple(dataArr, labelArr, 0.6, 0.001, 40)
+    # print(b)
+    # print(alphas[alphas > 0])
+    # for i in range(100):
+    #     if alphas[i] > 0.0: print(dataArr[i], labelArr[i])
+    # smoSimple
+    testDigits(('rbf', 20))

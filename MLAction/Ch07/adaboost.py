@@ -205,12 +205,12 @@ def plotROC(predStrengths, classLabels):
 
 
 if __name__ == '__main__':
-    # datMat, classLables = loadSimpData()
-    # D = mat(ones((5, 1)) / 5)
-    # buildStump(datMat, classLables, D)
-    # classifierArray, aggClassEst = adaBoostTrainDS(datMat, classLables, 10)
-    # print(classifierArray)
-    # adaClassify([0, 0], classifierArray)
+    datMat, classLables = loadSimpData()
+    D = mat(ones((5, 1)) / 5)
+    buildStump(datMat, classLables, D)
+    classifierArray, aggClassEst = adaBoostTrainDS(datMat, classLables, 10)
+    print(classifierArray)
+    adaClassify([0, 0], classifierArray)
     dataArr, lableArr = loadDataSet('horseColicTraining2.txt')
     classifierArray, aggClassEst = adaBoostTrainDS(dataArr, lableArr, 10)
     plotROC(aggClassEst.T, lableArr)
